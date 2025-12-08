@@ -1,0 +1,10 @@
+<Solution>
+  <Project Path="AppHost/AppHost.csproj"></Project>
+  <Project Path="ServiceDefaults/ServiceDefaults.csproj"></Project>
+  <Project Path="WebshopService/WebshopService.csproj"></Project>
+  <Project Path="WebshopWorkers/WebshopWorkers.csproj"></Project>
+  <Project Path="PimApi/PimApi.csproj"></Project>
+  <Project Path="CrmApi/CrmApi.csproj"></Project>
+  <Project Path="Backend/Backend.csproj"></Project>
+  <Project Path="PspApi/PspApi.csproj"></Project>
+</Solution>
