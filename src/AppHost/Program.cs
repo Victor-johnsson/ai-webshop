@@ -44,9 +44,6 @@ var paymentsDatabase = builder
     .AddAzurePostgresFlexibleServer("paymentsDatabase")
     .AddDatabase("payments");
 
-// ======== AZURE FUNCTIONS ========
-var functions = builder.AddAzureFunctionsProject<Projects.WebshopWorkers>("functions");
-
 // ======== PROJECTS/SERVICES ========
 // Product Catalog Service
 var productCatalog = builder
@@ -62,19 +59,6 @@ var crm = builder
     .WithReference(crmConnectionString)
     .WaitFor(crmConnectionString);
 
-// Functions Service
-functions
-    .WithExternalHttpEndpoints()
-    .WithReference(productCatalog)
-    .WaitFor(productCatalog)
-    .WithReference(redis)
-    .WaitFor(redis)
-    .WithReference(crm)
-    .WaitFor(crm)
-    .WithReference(servicebus)
-    .WaitFor(servicebus)
-    .WithReference(tables)
-    .WaitFor(tables);
 // Payments Service
 var paymentsService = builder
     .AddProject<Projects.PspApi>("paymentsService")

@@ -30,7 +30,6 @@
     <ProjectReference Include="../CrmApi/CrmApi.csproj"></ProjectReference>
     <ProjectReference Include="../PimApi/PimApi.csproj"></ProjectReference>
     <ProjectReference Include="../PspApi/PspApi.csproj"></ProjectReference>
-    <ProjectReference Include="../WebshopWorkers/WebshopWorkers.csproj"></ProjectReference>
     <ProjectReference Include="../Backend/Backend.csproj"></ProjectReference>
   </ItemGroup>
   <ItemGroup>
