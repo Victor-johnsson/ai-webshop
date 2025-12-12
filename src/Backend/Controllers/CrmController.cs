@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
 using Backend.Crm.Models;
 using Backend.Crm.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers
 {
@@ -8,14 +8,12 @@ namespace Backend.Controllers
     public class CrmController : ControllerBase
     {
         private readonly ILogger<CrmController> _logger;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IOrderService _orderService;
 
 
-        public CrmController(ILogger<CrmController> logger, IHttpContextAccessor httpContextAccessor, IOrderService orderService)
+        public CrmController(ILogger<CrmController> logger, IOrderService orderService)
         {
             _logger = logger;
-            _httpContextAccessor = httpContextAccessor;
             _orderService = orderService;
         }
 
@@ -39,24 +37,21 @@ namespace Backend.Controllers
         public async Task<IActionResult> GetOrder(string orderId)
         {
 
-           if (string.IsNullOrWhiteSpace(orderId))
-           {
-               return BadRequest("Missing orderId");
-           }
+            if (string.IsNullOrWhiteSpace(orderId))
+            {
+                return BadRequest("Missing orderId");
+            }
 
-           return Ok();
+            var dto = await _orderService.GetOrder(orderId);
+
+
+            return Ok(dto);
         }
 
         [HttpGet("crm/api/orders")]
-        public async Task<IActionResult> GetOrders(string orderId)
+        public async Task<IActionResult> GetOrders()
         {
-
-           if (string.IsNullOrWhiteSpace(orderId))
-           {
-               return BadRequest("Missing orderId");
-           }
-
-           return Ok();
+            return Ok(await _orderService.GetOrders());
         }
 
         [HttpPatch("crm/api/order")]

@@ -9,14 +9,14 @@ namespace Backend.Crm.Services
     public interface IOrderService
     {
         Task<OrderDTO> CreateOrder(CreateOrderModel model);
-        //Task GetOrders();
-        //Task GetOrder();
+        Task<ICollection<OrderDTO>> GetOrders();
+        Task<OrderDTO> GetOrder(string id);
         Task<List<OrderDTO>> UpdateOrderStatus();
 
     }
     public class OrderService : IOrderService
     {
-        CrmContext _context;
+        readonly CrmContext _context;
 
         public OrderService(CrmContext context)
         {
@@ -60,10 +60,44 @@ namespace Backend.Crm.Services
             throw new Exception();
         }
 
-        //public async Task GetOrders()
-        //{
+        public async Task<OrderDTO> GetOrder(string id)
+        {
+            var order = await _context.Orders.Include(o => o.Customer).Include(o => o.OrderLines).FirstOrDefaultAsync(o => o.Id.ToString() == id);
+            if (order != null)
+            {
+                var dtoObj = new OrderDTO
+                {
+                    OrderId = order.Id,
+                    CustomerName = order.Customer?.Name,
+                    OrderStatus = order.Status,
+                    CustomerEmail = order.Customer?.Email,
+                    CustomerAddress = order.Customer?.Address
+                };
+                return dtoObj;
+            }
 
-        //}
+            throw new Exception("Order not found");
+        }
+
+        public async Task<ICollection<OrderDTO>> GetOrders()
+        {
+            var orders = await _context.Orders.Include(o => o.Customer).Include(o => o.OrderLines).ToListAsync();
+            var dtoList = new List<OrderDTO>();
+            foreach (var order in orders)
+            {
+                var dtoObj = new OrderDTO
+                {
+                    OrderId = order.Id,
+                    CustomerName = order.Customer?.Name,
+                    OrderStatus = order.Status,
+                    CustomerEmail = order.Customer?.Email,
+                    CustomerAddress = order.Customer?.Address
+                };
+                dtoList.Add(dtoObj);
+            }
+
+            return dtoList;
+        }
 
         public async Task<List<OrderDTO>> UpdateOrderStatus()
         {
