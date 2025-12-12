@@ -30,8 +30,6 @@ builder.AddRedisClient("redis");
 builder.AddAzureServiceBusClient("serviceBus");
 builder.AddAzureBlobContainerClient("productimages");
 
-builder.Services.AddSingleton<ServiceBusPublisherService>();
-builder.Services.AddSingleton<EventGridService>();
 builder.Services.AddSingleton<IImageService, ImageService>();
 
 builder.Services.AddHttpClient<IPaymentsService, PaymentsService>(static client =>

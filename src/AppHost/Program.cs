@@ -13,19 +13,11 @@ var redis = builder
     .WithAccessKeyAuthentication()
     .RunAsExisting("redis-xproject-integrations", "rg-xproject-integrations");
 
-// Service Bus with Topics and Subscriptions
-var servicebus = builder.AddAzureServiceBus("serviceBus").RunAsExisting("sbns-xproject-integrations", "rg-xproject-integrations");
-var topic = servicebus.AddServiceBusTopic("topic", "sbt-xproject-integrations");
-topic.AddServiceBusSubscription("logic-xproject-integrations");
-topic.AddServiceBusSubscription("sbts-order-created");
-topic.AddServiceBusSubscription("sbts-Transport-booking");
-
 // Storage Account Resources
 var storage = builder.AddAzureStorage("storage").RunAsExisting("strgxprojectintegrations", "rg-xproject-integrations");
 // var blobs = storage.AddBlobs("productimages");
 var blobs = storage.AddBlobContainer("productimages");
 
-var tables = storage.AddTables("tables");
 
 // ======== DATABASES ========
 // CosmosDB for Product Information
@@ -66,13 +58,11 @@ var backend = builder
     .AddProject<Projects.Backend>("backend")
     .WithExternalHttpEndpoints()
     .WithReference(redis)
-    .WithReference(servicebus)
     .WithReference(blobs)
     .WithReference(productCatalog)
     .WithReference(paymentsService)
     .WithReference(db)
     .WaitFor(redis)
-    .WaitFor(servicebus)
     .WaitFor(paymentsService)
     .WaitFor(productCatalog);
 
