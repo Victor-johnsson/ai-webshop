@@ -36,8 +36,9 @@ var cosmos = builder
 
 var productsDatabase = cosmos.AddCosmosDatabase("productsCosmosDb", "db");
 
-// SQL Server for Customer Database
-var crmConnectionString = builder.AddConnectionString("crm",ReferenceExpression.Create($"Server=tcp:sql-xproject-sql.database.windows.net,1433;Initial Catalog=CRM;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=Active Directory Default;"));
+// Postgres for CRM (local Docker)
+var crmPostgres = builder.AddPostgres("crm-db");
+var db = crmPostgres.AddDatabase("db");
 
 // Postgres for Payments Database
 var paymentsDatabase = builder
@@ -53,11 +54,6 @@ var productCatalog = builder
     .WaitFor(productsDatabase);
 
 // CRM Application
-var crm = builder
-    .AddProject<Projects.CrmApi>("crmApplication")
-    .WithExternalHttpEndpoints()
-    .WithReference(crmConnectionString)
-    .WaitFor(crmConnectionString);
 
 // Payments Service
 var paymentsService = builder
@@ -74,6 +70,7 @@ var backend = builder
     .WithReference(blobs)
     .WithReference(productCatalog)
     .WithReference(paymentsService)
+    .WithReference(db)
     .WaitFor(redis)
     .WaitFor(servicebus)
     .WaitFor(paymentsService)

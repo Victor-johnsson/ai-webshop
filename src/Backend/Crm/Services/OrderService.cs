@@ -1,10 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using XProject.Integrations.CRM.EntityFramework;
-using XProject.Integrations.CRM.EntityFramework.Entities;
-using XProject.Integrations.CRM.Enums;
-using XProject.Integrations.CRM.Models.RequestModels;
+using Microsoft.EntityFrameworkCore;
+using Backend.Crm.EntityFramework;
+using Backend.Crm.EntityFramework.Entities;
+using Backend.Crm.Models;
 
-namespace XProject.Integrations.CRM.Services
+namespace Backend.Crm.Services
 {
 
     public interface IOrderService

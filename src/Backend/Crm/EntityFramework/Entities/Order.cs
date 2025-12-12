@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Backend.Crm.EntityFramework.Entities;
 
-namespace XProject.Integrations.CRM.EntityFramework.Entities
+namespace Backend.Crm.EntityFramework.Entities
 {
     public class Order
     {

@@ -1,4 +1,4 @@
-﻿namespace XProject.Integrations.CRM.Enums
+namespace Backend.Crm.Models
 {
     public enum OrderStatusEnum
     {

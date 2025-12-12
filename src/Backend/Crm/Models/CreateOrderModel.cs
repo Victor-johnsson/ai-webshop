@@ -1,6 +1,6 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
-namespace XProject.Integrations.CRM.Models.RequestModels
+namespace Backend.Crm.Models
 {
     public class CreateOrderModel
     {

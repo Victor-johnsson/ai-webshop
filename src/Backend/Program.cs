@@ -1,9 +1,8 @@
 using System.Text.Json;
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
+using Backend.Crm.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
-using XProjectIntegrationsBackend.Controllers;
 using XProjectIntegrationsBackend.Interfaces;
 using XProjectIntegrationsBackend.Services;
 
@@ -21,10 +20,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 builder.Services.AddControllers()
     .AddJsonOptions(o => o.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase);
-builder.Services.AddSingleton<IOrderService, OrderService>();
+builder.Services.AddScoped<Backend.Crm.Services.IOrderService, Backend.Crm.Services.OrderService>();
+builder.Services.AddDbContext<CrmContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("db"))
+);
+
 builder.AddRedisClient("redis");
 
-// builder.AddKeyedRedisClient("redis");
 builder.AddAzureServiceBusClient("serviceBus");
 builder.AddAzureBlobContainerClient("productimages");
 
@@ -83,5 +85,12 @@ app.UseCors("AllowAllOrigins");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+// Apply EF Core migrations at startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<CrmContext>();
+    db.Database.Migrate();
+}
 
 app.Run();

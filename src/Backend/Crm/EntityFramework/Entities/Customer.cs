@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Backend.Crm.EntityFramework.Entities;
 
-namespace XProject.Integrations.CRM.EntityFramework.Entities
+namespace Backend.Crm.EntityFramework.Entities
 {
     public class Customer
     {
@@ -9,6 +10,6 @@ namespace XProject.Integrations.CRM.EntityFramework.Entities
         public string? Name { get; set; }
         public string? Address { get; set; }
         public string? Email { get; set; }
-        public Order? Order { get; set; }
+        public Order? Order { get; set; } // Navigation property
     }
 }

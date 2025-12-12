@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using XProject.Integrations.CRM.Models.RequestModels;
-using XProject.Integrations.CRM.Services;
+using Backend.Crm.Models;
+using Backend.Crm.Services;
 
-namespace XProject.Integrations.CRM.Controllers
+namespace Backend.Controllers
 {
     [ApiController]
     public class CrmController : ControllerBase

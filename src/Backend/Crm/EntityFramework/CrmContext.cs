@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
-using XProject.Integrations.CRM.EntityFramework.Entities;
+using Backend.Crm.EntityFramework.Entities;
 
-namespace XProject.Integrations.CRM.EntityFramework
+namespace Backend.Crm.EntityFramework
 {
     public class CrmContext : DbContext
     {

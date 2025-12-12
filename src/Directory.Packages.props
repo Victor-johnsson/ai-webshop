@@ -83,5 +83,6 @@
     <PackageVersion Include="Microsoft.Extensions.Caching.Redis" Version="2.3.0"></PackageVersion>
     <PackageVersion Include="Aspire.Microsoft.EntityFrameworkCore.Cosmos" Version="13.0.0"></PackageVersion>
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.9"></PackageVersion>
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4"></PackageVersion>
   </ItemGroup>
 </Project>
