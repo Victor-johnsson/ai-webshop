@@ -1,5 +1,4 @@
 using Aspire.Hosting.Yarp.Transforms;
-using Extensions;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -10,37 +9,16 @@ var env = builder.AddAzureAppServiceEnvironment("xproj-environment");
 // Redis Cache
 var redis = builder
     .AddAzureRedis("redis")
-    .WithAccessKeyAuthentication()
-    .RunAsExisting("redis-xproject-integrations", "rg-xproject-integrations");
+    .RunAsContainer();
 
 // Storage Account Resources
-var storage = builder.AddAzureStorage("storage").RunAsExisting("strgxprojectintegrations", "rg-xproject-integrations");
-// var blobs = storage.AddBlobs("productimages");
+var storage = builder.AddAzureStorage("storage").RunAsEmulator();
 var blobs = storage.AddBlobContainer("productimages");
 
 
-// ======== DATABASES ========
-// CosmosDB for Product Information
-var cosmos = builder
-    .AddAzureCosmosDB("cosmospim")
-    .RunAsExisting("cosmosdb-ugx47vukmeif2","rg-x-integration-pim")
-    .ConfigureAzureCosmosDbInfra();
-
-var productsDatabase = cosmos.AddCosmosDatabase("productsCosmosDb", "db");
-
 // Postgres for CRM (local Docker)
-var crmPostgres = builder.AddPostgres("crm-db");
-var db = crmPostgres.AddDatabase("db");
-
-
-// ======== PROJECTS/SERVICES ========
-// Product Catalog Service
-var productCatalog = builder
-    .AddProject<Projects.PimApi>("productCatalog")
-    .WithExternalHttpEndpoints()
-    .WithReference(productsDatabase)
-    .WaitFor(productsDatabase);
-
+var postgres = builder.AddPostgres("postgres").WithPgAdmin();
+var db = postgres.AddDatabase("db");
 
 // Backend Service
 var backend = builder
@@ -48,10 +26,15 @@ var backend = builder
     .WithExternalHttpEndpoints()
     .WithReference(redis)
     .WithReference(blobs)
-    .WithReference(productCatalog)
     .WithReference(db)
-    .WaitFor(redis)
-    .WaitFor(productCatalog);
+    .WaitFor(redis);
+
+var migrations = builder.AddEfMigrate(backend, db);
+
+backend.WaitForCompletion(migrations);
+backend.WithChildRelationship(migrations);
+
+
 
 // Frontend Application
 var frontend = builder
@@ -69,3 +52,6 @@ var yarp = builder.AddYarp("yarp")
 
 frontend.WithReference(yarp);
 builder.Build().Run();
+
+
+

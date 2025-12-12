@@ -1,24 +1,21 @@
 using Microsoft.EntityFrameworkCore;
-using Backend.Crm.EntityFramework;
-using Backend.Crm.EntityFramework.Entities;
+using Backend.Models.Crm;
 using Backend.Crm.Models;
 
 namespace Backend.Crm.Services
 {
-
     public interface IOrderService
     {
         Task<OrderDTO> CreateOrder(CreateOrderModel model);
         Task<ICollection<OrderDTO>> GetOrders();
         Task<OrderDTO> GetOrder(string id);
         Task<List<OrderDTO>> UpdateOrderStatus();
-
     }
     public class OrderService : IOrderService
     {
-        readonly CrmContext _context;
+        readonly Backend.EntityFramework.BackendDbContext _context;
 
-        public OrderService(CrmContext context)
+        public OrderService(Backend.EntityFramework.BackendDbContext context)
         {
             _context = context;
         }
@@ -27,9 +24,9 @@ namespace Backend.Crm.Services
         {
             Customer customer = new Customer()
             {
-                Name = model.Customer?.Name,
-                Address = model.Customer?.Address,
-                Email = model.Customer?.Email,
+                Name = model.Customer?.Name ?? string.Empty,
+                Address = model.Customer?.Address ?? string.Empty,
+                Email = model.Customer?.Email ?? string.Empty,
                 Order = new Order()
                 {
                     PaymentId = model.PaymentId,
@@ -38,17 +35,17 @@ namespace Backend.Crm.Services
                     {
                         ProdRef = p.ProductId,
                         ItemCount = p.ItemCount
-
-                    }).ToList()
+                    }).ToList() ?? new List<OrderLine>()
                 }
             };
 
             _context.Customers.Add(customer);
             var v = await _context.SaveChangesAsync();
-            if (v >1){
+            if (v > 1)
+            {
                 OrderDTO orderDTO = new OrderDTO
                 {
-                    OrderId = customer.Order.Id,
+                    OrderId = customer.Order!.Id,
                     CustomerName = customer.Name,
                     CustomerAddress = customer.Address,
                     CustomerEmail = customer.Email,
@@ -130,11 +127,10 @@ namespace Backend.Crm.Services
 
     public class OrderDTO
     {
-        public int OrderId { get; set; }
+        public Guid OrderId { get; set; }
         public string? CustomerName { get; set; }
         public string? OrderStatus { get; set; }
         public string? CustomerEmail { get; set; }
         public string? CustomerAddress { get; set; }
     }
 }
-

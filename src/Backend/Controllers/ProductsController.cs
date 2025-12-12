@@ -1,121 +1,93 @@
+using Backend.EntityFramework;
+using Backend.Pim.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using XProjectIntegrationsBackend.Interfaces;
-using ClassLibrary.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace XProjectIntegrationsBackend.Controllers;
 
-[Route("/products")]
+[Route("api/products")]
 [ApiController]
-public class ProductsController(ILogger<ProductsController> logger, IPimService pimService)
-    : ControllerBase
+public class ProductsController : ControllerBase
 {
-    private readonly ILogger<ProductsController> _logger = logger;
-    private readonly IPimService _pimService = pimService;
+    private readonly BackendDbContext _context;
+    private readonly ILogger<ProductsController> _logger;
+
+    public ProductsController(BackendDbContext context, ILogger<ProductsController> logger)
+    {
+        _context = context;
+        _logger = logger;
+    }
 
     [HttpGet]
     public async Task<IActionResult> GetAllProducts()
     {
-        try
-        {
-            var data = await _pimService.GetAllProductsAsync();
-            return Ok(data);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Error fetching products: {Message}", ex.Message);
-            return StatusCode(500, $"Internal Server Error: {ex.Message}");
-        }
+        var products = await _context.Products.ToListAsync();
+        return Ok(products);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetProductById(Guid id)
     {
-        try
-        {
-            var data = await _pimService.GetProductByIdAsync(id);
-            return Ok(data);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Error fetching Product ID {Id}: {Message}", id, ex.Message);
-            return StatusCode(500, $"Internal Server Error: {ex.Message}");
-        }
+        var product = await _context.Products.FindAsync(id);
+        if (product == null)
+            return NotFound();
+        return Ok(product);
     }
 
     [HttpPost]
-    [Authorize(Policy = "MustBeAdmin")]
-    public async Task<IActionResult> CreateProduct([FromBody] Product product)
+    // [Authorize(Policy = "MustBeAdmin")]
+    public async Task<IActionResult> CreateProduct([FromBody] CreateProduct model)
     {
-        if (product == null)
-        {
-            _logger.LogWarning("Received null product object.");
-            return BadRequest("Product data is required.");
-        }
+        if (string.IsNullOrWhiteSpace(model.Name))
+            return BadRequest("Product name is required.");
+        if (model.Price < 0)
+            return BadRequest("Price must be non-negative.");
+        if (model.Stock < 0)
+            return BadRequest("Stock must be non-negative.");
 
-        try
-        {
-            var (success, data, statusCode) = await _pimService.CreateProductAsync(product);
+        // Check for unique name
+        if (await _context.Products.AnyAsync(p => p.Name == model.Name))
+            return Conflict("A product with this name already exists.");
 
-            if (!success)
-            {
-                return StatusCode(
-                    statusCode,
-                    new ProblemDetails
-                    {
-                        Status = statusCode,
-                        Title = "Product creation failed",
-                        Detail = data,
-                    }
-                );
-            }
-
-            return Ok(data);
-        }
-        catch (HttpRequestException httpEx)
+        var product = new Product
         {
-            _logger.LogError(httpEx, "HTTP request error while creating product.");
-            return StatusCode(502, "Bad Gateway: Unable to process request.");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Unexpected error while creating product.");
-            return StatusCode(
-                500,
-                new ProblemDetails
-                {
-                    Status = 500,
-                    Title = "Internal Server Error",
-                    Detail = "An unexpected error occurred. Please try again later.",
-                }
-            );
-        }
+            Id = Guid.CreateVersion7(),
+            Name = model.Name,
+            Price = model.Price,
+            Stock = model.Stock,
+            ImageUrl = model.ImageUrl
+        };
+        _context.Products.Add(product);
+        await _context.SaveChangesAsync();
+        return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
     }
 
-    [HttpDelete("{id}")]
-    [Authorize(Policy = "MustBeAdmin")]
-    // [Authentica
+    [HttpPut("{id:guid}/stock")]
+    // [Authorize(Policy = "MustBeAdmin")]
+    public async Task<IActionResult> DecrementStock(Guid id, [FromQuery] int stockCount)
+    {
+        var product = await _context.Products.FindAsync(id);
+        if (product == null)
+            return NotFound();
+        if (stockCount <= 0)
+            return BadRequest("Stock count must be positive.");
+        if (product.Stock < stockCount)
+            return BadRequest($"Insufficient stock. Available: {product.Stock}, Requested: {stockCount}");
+        product.Stock -= stockCount;
+        await _context.SaveChangesAsync();
+        return Ok(product);
+    }
+
+    [HttpDelete("{id:guid}")]
+    // [Authorize(Policy = "MustBeAdmin")]
     public async Task<IActionResult> DeleteProduct(Guid id)
     {
-        try
-        {
-            var (success, errorMessage, statusCode) = await _pimService.DeleteProductAsync(id);
-
-            if (!success)
-            {
-                return StatusCode(statusCode, errorMessage);
-            }
-
-            // await _pimService.InvalidateCacheForProductAsync(id);
-
-            return NoContent();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Error deleting Product ID {Id}: {Message}",
-                             id,
-                             ex.Message);
-            return StatusCode(500, $"Internal Server Error: {ex.Message}");
-        }
+        var product = await _context.Products.FindAsync(id);
+        if (product == null)
+            return NotFound();
+        _context.Products.Remove(product);
+        await _context.SaveChangesAsync();
+        return NoContent();
     }
 }

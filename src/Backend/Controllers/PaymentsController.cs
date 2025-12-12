@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using ClassLibrary.Models;
 using XProjectIntegrationsBackend.Services;
 
 namespace XProjectIntegrationsBackend.Controllers;
@@ -21,27 +20,4 @@ public class PaymentsController : ControllerBase
         return await _paymentsService.CreatePaymentsAsync();
     }
 
-    [HttpPut]
-    public async Task<IResult> UpdatePayments(Payment payment)
-    {
-        return await _paymentsService.UpdatePaymentsAsync(payment);
-    }
-
-    [HttpGet]
-    public async Task<IResult> GetPayments()
-    {
-        return await _paymentsService.GetPaymentsAsync();
-    }
-
-    [HttpGet("{id}")]
-    public async Task<IResult> GetPaymentsById(int id)
-    {
-        return await _paymentsService.GetPaymentsByIdAsync(id);
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IResult> DeletePaymentsById(int id)
-    {
-        return await _paymentsService.DeletePaymentsByIdAsync(id);
-    }
 }

@@ -1,7 +1,7 @@
 using StackExchange.Redis;
 using System.Text.Json;
 using XProjectIntegrationsBackend.Interfaces;
-using ClassLibrary.Models;
+using Backend.Models.Pim;
 using XProjectIntegrationsBackend.Models;
 
 namespace XProjectIntegrationsBackend.Services

@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Backend.Crm.EntityFramework;
+using Backend.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
@@ -21,7 +21,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddControllers()
     .AddJsonOptions(o => o.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase);
 builder.Services.AddScoped<Backend.Crm.Services.IOrderService, Backend.Crm.Services.OrderService>();
-builder.Services.AddDbContext<CrmContext>(options =>
+builder.Services.AddDbContext<BackendDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("db"))
 );
 
@@ -31,13 +31,8 @@ builder.AddAzureServiceBusClient("serviceBus");
 builder.AddAzureBlobContainerClient("productimages");
 
 builder.Services.AddSingleton<IImageService, ImageService>();
+builder.Services.AddHttpClient<IPaymentsService, PaymentsService>();
 
-builder.Services.AddHttpClient<IPaymentsService, PaymentsService>(static client =>
-    client.BaseAddress = new("https+http://paymentsService")
-);
-builder.Services.AddHttpClient<IPimService, PimService>(static client =>
-    client.BaseAddress = new("https+http://productCatalog")
-);
 
 builder
     .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -85,10 +80,10 @@ app.UseAuthorization();
 app.MapControllers();
 
 // Apply EF Core migrations at startup
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<CrmContext>();
-    db.Database.Migrate();
-}
+// using (var scope = app.Services.CreateScope())
+// {
+//     var db = scope.ServiceProvider.GetRequiredService<BackendDbContext>();
+//     db.Database.Migrate();
+// }
 
 app.Run();

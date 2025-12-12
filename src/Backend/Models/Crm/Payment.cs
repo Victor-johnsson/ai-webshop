@@ -1,4 +1,4 @@
-namespace ClassLibrary.Models;
+namespace Backend.Models.Crm;
 
 public class Payment
 {

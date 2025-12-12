@@ -1,4 +1,4 @@
-using ClassLibrary.Models;
+using Backend.Models.Pim;
 using XProjectIntegrationsBackend.Models;
 
 namespace XProjectIntegrationsBackend.Interfaces

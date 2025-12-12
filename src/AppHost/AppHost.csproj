@@ -27,7 +27,6 @@
     <PackageReference Include="Aspire.Hosting.Yarp"></PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="../PimApi/PimApi.csproj"></ProjectReference>
     <ProjectReference Include="../Backend/Backend.csproj"></ProjectReference>
   </ItemGroup>
 </Project>
