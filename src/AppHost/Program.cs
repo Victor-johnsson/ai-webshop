@@ -32,10 +32,6 @@ var productsDatabase = cosmos.AddCosmosDatabase("productsCosmosDb", "db");
 var crmPostgres = builder.AddPostgres("crm-db");
 var db = crmPostgres.AddDatabase("db");
 
-// Postgres for Payments Database
-var paymentsDatabase = builder
-    .AddAzurePostgresFlexibleServer("paymentsDatabase")
-    .AddDatabase("payments");
 
 // ======== PROJECTS/SERVICES ========
 // Product Catalog Service
@@ -45,13 +41,6 @@ var productCatalog = builder
     .WithReference(productsDatabase)
     .WaitFor(productsDatabase);
 
-// CRM Application
-
-// Payments Service
-var paymentsService = builder
-    .AddProject<Projects.PspApi>("paymentsService")
-    .WithExternalHttpEndpoints()
-    .WithReference(paymentsDatabase);
 
 // Backend Service
 var backend = builder
@@ -60,10 +49,8 @@ var backend = builder
     .WithReference(redis)
     .WithReference(blobs)
     .WithReference(productCatalog)
-    .WithReference(paymentsService)
     .WithReference(db)
     .WaitFor(redis)
-    .WaitFor(paymentsService)
     .WaitFor(productCatalog);
 
 // Frontend Application
