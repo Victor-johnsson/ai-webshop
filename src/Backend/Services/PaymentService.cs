@@ -1,5 +1,4 @@
-
-namespace XProjectIntegrationsBackend.Services;
+namespace Backend.Services;
 
 public interface IPaymentsService
 {

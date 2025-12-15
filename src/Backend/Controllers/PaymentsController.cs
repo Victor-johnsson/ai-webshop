@@ -1,7 +1,7 @@
+using Backend.Services;
 using Microsoft.AspNetCore.Mvc;
-using XProjectIntegrationsBackend.Services;
 
-namespace XProjectIntegrationsBackend.Controllers;
+namespace Backend.Controllers;
 
 [Route("/payments")]
 [ApiController]

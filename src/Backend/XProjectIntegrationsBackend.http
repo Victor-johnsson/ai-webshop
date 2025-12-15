@@ -1,6 +1,0 @@
-@XProjectIntegrationsBackend_HostAddress = http://localhost:5129
-
-GET {{XProjectIntegrationsBackend_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

@@ -1,11 +1,10 @@
 using System.Text.Json;
 using Backend.EntityFramework;
+using Backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
-using Scalar;
 using Scalar.AspNetCore;
-using XProjectIntegrationsBackend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
@@ -20,7 +19,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpClient();
 builder.Services.AddControllers()
     .AddJsonOptions(o => o.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase);
-builder.Services.AddScoped<Backend.Crm.Services.IOrderService, Backend.Crm.Services.OrderService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddDbContext<BackendDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("db"))
 );

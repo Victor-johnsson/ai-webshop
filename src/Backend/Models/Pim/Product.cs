@@ -8,9 +8,15 @@ public class Product
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
-    public string? Name { get; set; }
-    public int? Price { get; set; }
-    public int? Stock { get; set; }
+
+    [Required]
+    public string Name { get; set; } = null!;
+
+    [Required]
+    public decimal Price { get; set; }
+
+    [Required]
+    public int Stock { get; set; }
+
     public string? ImageUrl { get; set; }
-    public string? ImageBase64 { get; set; }
 }

@@ -1,10 +1,10 @@
 using Backend.EntityFramework;
-using Backend.Pim.Models;
+using Backend.Models.Pim;
+using Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using XProjectIntegrationsBackend.Services;
 
-namespace XProjectIntegrationsBackend.Controllers;
+namespace Backend.Controllers;
 
 [Route("api/products")]
 [ApiController]

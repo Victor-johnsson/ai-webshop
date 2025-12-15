@@ -1,8 +1,7 @@
-﻿using Azure.Security.KeyVault.Secrets;
-using Azure.Storage.Blobs;
+﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 
-namespace XProjectIntegrationsBackend.Services;
+namespace Backend.Services;
 
 public interface IImageService
 {
@@ -13,8 +12,6 @@ public interface IImageService
 public class ImageService : IImageService
 {
     private readonly ILogger<ImageService> _logger;
-
-    private readonly string _containerName = "blobs";
 
     private readonly BlobContainerClient _blobServiceClient;
 

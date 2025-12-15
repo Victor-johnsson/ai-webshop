@@ -1,5 +1,5 @@
-using Backend.Crm.Models;
-using Backend.Crm.Services;
+using Backend.Models.Crm;
+using Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers;

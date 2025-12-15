@@ -1,5 +1,5 @@
+using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
-using XProjectIntegrationsBackend.Models;
 
 namespace Backend.Controllers;
 

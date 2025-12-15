@@ -1,4 +1,5 @@
 using Backend.Models.Crm;
+using Backend.Models.Pim;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.EntityFramework;
@@ -10,7 +11,7 @@ public class BackendDbContext : DbContext
     public DbSet<Customer> Customers { get; set; } = null!;
     public DbSet<Order> Orders { get; set; } = null!;
     public DbSet<OrderLine> OrderLines { get; set; } = null!;
-    public DbSet<Pim.Models.Product> Products { get; set; } = null!;
+    public DbSet<Product> Products { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -42,7 +43,7 @@ public class BackendDbContext : DbContext
             entity.Property(ol => ol.ItemCount).IsRequired();
         });
         // PIM
-        modelBuilder.Entity<Pim.Models.Product>(entity =>
+        modelBuilder.Entity<Product>(entity =>
         {
             entity.HasKey(p => p.Id);
             entity.Property(p => p.Id).ValueGeneratedOnAdd();
