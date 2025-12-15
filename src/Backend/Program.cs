@@ -2,7 +2,6 @@ using System.Text.Json;
 using Backend.EntityFramework;
 using Backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Scalar.AspNetCore;
 
@@ -20,18 +19,11 @@ builder.Services.AddHttpClient();
 builder.Services.AddControllers()
     .AddJsonOptions(o => o.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase);
 builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddDbContext<BackendDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("db"))
-);
-
-
+builder.AddNpgsqlDbContext<BackendDbContext>("db");
+builder.EnrichNpgsqlDbContext<BackendDbContext>();
 builder.AddAzureBlobContainerClient("productimages");
-
-
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddHttpClient<IPaymentsService, PaymentsService>();
-
-
 builder
     .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));

@@ -1,5 +1,6 @@
 using Backend.Models.Crm;
 using Backend.Models.Pim;
+using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.EntityFramework;
@@ -12,9 +13,20 @@ public class BackendDbContext : DbContext
     public DbSet<Order> Orders { get; set; } = null!;
     public DbSet<OrderLine> OrderLines { get; set; } = null!;
     public DbSet<Product> Products { get; set; } = null!;
+    public DbSet<Review> Reviews { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Reviews
+        modelBuilder.Entity<Review>(entity =>
+        {
+            entity.HasKey(r => r.Id);
+            entity.Property(r => r.Id).ValueGeneratedOnAdd();
+            entity.Property(r => r.Name).IsRequired();
+            entity.Property(r => r.Rating).IsRequired();
+            entity.Property(r => r.Comment).IsRequired();
+            entity.Property(r => r.Date).IsRequired();
+        });
         // CRM
         modelBuilder.Entity<Customer>(entity =>
         {

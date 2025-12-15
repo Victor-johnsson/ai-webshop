@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./Pages/Webshop";
 import AdminWebshop from "./Pages/Admin";
+import AdminReviewsPage from "./Pages/AdminReviews";
 import { AuthProvider } from "./Authentication/hooks/auth-provider";
 import ProtectedRoute from "./Authentication/ProtectedRoute";
 import AuthContext from "./Authentication/AuthContext";
@@ -30,8 +31,9 @@ const AuthConsumerApp = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route element={<ProtectedRoute />}>
+          <Route element={<ProtectedRoute />}> 
             <Route path="/admin" element={<AdminWebshop token={token} />} />
+            <Route path="/admin/reviews" element={<AdminReviewsPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

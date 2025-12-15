@@ -3,7 +3,7 @@ using Extensions;
 var builder = DistributedApplication.CreateBuilder(args);
 
 // ======== ENVIRONMENT & PARAMETERS ========
-var env = builder.AddAzureAppServiceEnvironment("xproj-environment");
+var env = builder.AddAzureAppServiceEnvironment("appservice-env");
 
 // Storage Account Resources
 var storage = builder.AddAzureStorage("storage").RunAsEmulator(e=>e.WithLifetime(ContainerLifetime.Persistent)).ConfigureStorageInfra();
@@ -45,7 +45,7 @@ var yarp = builder.AddYarp("yarp")
                   .WithConfiguration(c =>
                   {
                       c.AddRoute("/api/{**catch-all}", backend);
-                  });
+                  }).PublishWithStaticFiles(frontend);
 
 frontend.WithReference(yarp);
 builder.Build().Run();

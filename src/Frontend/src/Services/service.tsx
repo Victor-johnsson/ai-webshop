@@ -65,7 +65,7 @@ const convertImageToBase64 = async (image: File): Promise<string> => {
   });
 };
 
-// Add a products
+// Add a product
 export const addProduct = async (
   product: ProductInputType,
   token: string,
@@ -187,4 +187,40 @@ export const placeOrder = async (
     console.error("Error in placeOrder:", error);
     throw error;
   }
+};
+
+// ========== Site Review Types & API =============
+export type Review = {
+  id?: number;
+  name: string;
+  rating: number;
+  comment: string;
+  date?: string;
+};
+
+export const fetchReviews = async (): Promise<Review[]> => {
+  const response = await fetch('/api/reviews', {
+    method: 'GET',
+  });
+  if (!response.ok) {
+    throw new Error('Failed to fetch reviews');
+  }
+  return response.json();
+};
+
+export const submitReview = async (review: Omit<Review, 'id' | 'date'>): Promise<Review> => {
+  const response = await fetch('/api/reviews', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(review),
+  });
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(
+      'Failed to submit review: ' + response.status + ' ' + message
+    );
+  }
+  return response.json();
 };

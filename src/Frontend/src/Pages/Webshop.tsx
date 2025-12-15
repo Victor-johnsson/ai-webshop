@@ -10,6 +10,10 @@ import { useQuery } from "react-query";
 import { CartItemType, getProducts } from "../Services/service";
 import AppBarComponent from "../Components/AppBarComponent";
 import ProductList from "../Components/ProductList";
+import SiteReview from "../Components/SiteReview";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import Button from "@mui/material/Button";
 import Cart from "../Components/Cart";
 import "../styles.css";
 
@@ -22,6 +26,7 @@ export default function Webshop() {
   const [cartItems, setCartItems] = useState<CartItemType[]>([]);
   const [page, setPage] = useState(1);
   const itemsPerPage = 6;
+  const [reviewOpen, setReviewOpen] = useState(false);
 
   if (isLoading) return <LinearProgress />;
   if (error) return <div>Something went wrong</div>;
@@ -98,6 +103,20 @@ export default function Webshop() {
           />
         </Box>
       </Container>
+      {/* Review Button + Modal Dialog */}
+      <Box sx={{ display: "flex", justifyContent: "center", margin: "2rem 0" }}>
+        <Button variant="outlined" color="primary" onClick={() => setReviewOpen(true)}>
+          Site Reviews
+        </Button>
+      </Box>
+      <Dialog open={reviewOpen} onClose={() => setReviewOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Site Reviews</DialogTitle>
+        <SiteReview />
+        <Box sx={{ display: "flex", justifyContent: "center", py: 2 }}>
+          <Button onClick={() => setReviewOpen(false)} variant="outlined">Close</Button>
+        </Box>
+      </Dialog>
+
     </Box>
   );
 }
