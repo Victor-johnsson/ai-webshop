@@ -3,7 +3,6 @@ using Backend.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
-using XProjectIntegrationsBackend.Interfaces;
 using XProjectIntegrationsBackend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +26,6 @@ builder.Services.AddDbContext<BackendDbContext>(options =>
 
 builder.AddRedisClient("redis");
 
-builder.AddAzureServiceBusClient("serviceBus");
 builder.AddAzureBlobContainerClient("productimages");
 
 builder.Services.AddSingleton<IImageService, ImageService>();
@@ -60,7 +58,6 @@ builder.Services.AddCors(options =>
     );
 });
 
-builder.Services.AddScoped<IRedisCacheService, RedisCacheService>();
 
 var app = builder.Build();
 

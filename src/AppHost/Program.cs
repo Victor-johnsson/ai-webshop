@@ -1,4 +1,5 @@
 using Aspire.Hosting.Yarp.Transforms;
+using Extensions;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ var env = builder.AddAzureAppServiceEnvironment("xproj-environment");
 // Redis Cache
 var redis = builder
     .AddAzureRedis("redis")
+    .ConfigureRedisInfra()
     .RunAsContainer();
 
 // Storage Account Resources
@@ -16,9 +18,11 @@ var storage = builder.AddAzureStorage("storage").RunAsEmulator();
 var blobs = storage.AddBlobContainer("productimages");
 
 
-// Postgres for CRM (local Docker)
-var postgres = builder.AddPostgres("postgres").WithPgAdmin();
+
+// var postgres = builder.AddPostgres("postgres").WithPgAdmin();
+var postgres = builder.AddAzurePostgresFlexibleServer("postgres");
 var db = postgres.AddDatabase("db");
+postgres.RunAsContainer(c=>c.WithPgAdmin());
 
 // Backend Service
 var backend = builder
@@ -52,6 +56,5 @@ var yarp = builder.AddYarp("yarp")
 
 frontend.WithReference(yarp);
 builder.Build().Run();
-
 
 

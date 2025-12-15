@@ -1,65 +1,56 @@
 using Microsoft.AspNetCore.Mvc;
-using XProjectIntegrationsBackend.Interfaces;
 using XProjectIntegrationsBackend.Models;
 
-namespace XProjectIntegrationsBackend.Controllers
+namespace Backend.Controllers;
+
+[Route("/cart")]
+[ApiController]
+public class CartController : ControllerBase
 {
-    [Route("/cart")]
-    [ApiController]
-    public class CartController : ControllerBase
+
+    public CartController()
     {
-        // private readonly IRedisCacheService _cacheService;
+    }
 
-        public CartController(IRedisCacheService cacheService)
-        {
-            // _cacheService = cacheService;
-        }
+    [HttpPost("add")]
+    public async Task<IActionResult> AddToCart(
+        [FromQuery] string sessionId,
+        [FromBody] CartItem item
+    )
+    {
+        if (string.IsNullOrEmpty(sessionId))
+            return BadRequest("Session ID is required.");
 
-        [HttpPost("add")]
-        public async Task<IActionResult> AddToCart(
-            [FromQuery] string sessionId,
-            [FromBody] CartItem item
-        )
-        {
-            if (string.IsNullOrEmpty(sessionId))
-                return BadRequest("Session ID is required.");
+        return Ok(new { message = "Item added to cart." });
+    }
 
-            // await _cacheService.AddToCartAsync(sessionId, item);
-            return Ok(new { message = "Item added to cart." });
-        }
+    [HttpGet]
+    public async Task<IActionResult> GetCart([FromQuery] string sessionId)
+    {
+        if (string.IsNullOrEmpty(sessionId))
+            return BadRequest("Session ID is required.");
 
-        [HttpGet]
-        public async Task<IActionResult> GetCart([FromQuery] string sessionId)
-        {
-            if (string.IsNullOrEmpty(sessionId))
-                return BadRequest("Session ID is required.");
+        return Ok();
+    }
 
-            // List<CartItem> cart = await _cacheService.GetCartAsync(sessionId);
-            // return Ok(cart);
-            return Ok();
-        }
+    [HttpDelete("remove")]
+    public async Task<IActionResult> RemoveFromCart(
+        [FromQuery] string sessionId,
+        [FromQuery] string productId
+    )
+    {
+        if (string.IsNullOrEmpty(sessionId) || string.IsNullOrEmpty(productId))
+            return BadRequest("Session ID and Product ID are required.");
 
-        [HttpDelete("remove")]
-        public async Task<IActionResult> RemoveFromCart(
-            [FromQuery] string sessionId,
-            [FromQuery] string productId
-        )
-        {
-            if (string.IsNullOrEmpty(sessionId) || string.IsNullOrEmpty(productId))
-                return BadRequest("Session ID and Product ID are required.");
+        return Ok(new { message = "Item removed from cart." });
+    }
 
-            // await _cacheService.RemoveFromCartAsync(sessionId, productId);
-            return Ok(new { message = "Item removed from cart." });
-        }
+    [HttpDelete("clear")]
+    public async Task<IActionResult> ClearCart([FromQuery] string sessionId)
+    {
+        if (string.IsNullOrEmpty(sessionId))
+            return BadRequest("Session ID is required.");
 
-        [HttpDelete("clear")]
-        public async Task<IActionResult> ClearCart([FromQuery] string sessionId)
-        {
-            if (string.IsNullOrEmpty(sessionId))
-                return BadRequest("Session ID is required.");
-
-            // await _cacheService.ClearCartAsync(sessionId);
-            return Ok(new { message = "Cart cleared." });
-        }
+        return Ok(new { message = "Cart cleared." });
     }
 }
