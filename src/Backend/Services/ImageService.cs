@@ -7,6 +7,7 @@ namespace XProjectIntegrationsBackend.Services;
 public interface IImageService
 {
     Task<string> UploadImageAsync(string base64Image, string fileName);
+      Task SetPublicReadOnExistingContainer();
 }
 
 public class ImageService : IImageService
@@ -67,6 +68,23 @@ public class ImageService : IImageService
         return extension;
     }
 
+    public async Task SetPublicReadOnExistingContainer()
+    {
+        try
+        {
+            // Check if the container exists
+            if (!await _blobServiceClient.ExistsAsync())
+            {
+                return;
+            }
+            await _blobServiceClient.SetAccessPolicyAsync(PublicAccessType.Blob, null);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+
     private async Task<string> UploadToBlobStorageAsync(
         byte[] imageBytes,
         string blobName,
@@ -90,6 +108,7 @@ public class ImageService : IImageService
                         _ => "application/octet-stream",
                     },
                 }
+
             );
         }
 

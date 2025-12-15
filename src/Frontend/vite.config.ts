@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
              proxy: {
                  '/api': {
                     target: process.env.YARP_HTTPS || process.env.YARP_HTTP,
-                    // target: process.env.BACKEND_HTTPS || process.env.BACKEND_HTTP,
+                    // target: procss.env.BACKEND_HTTPS || process.env.BACKEND_HTTP,
                      changeOrigin: true,
                      secure: false,
                  }

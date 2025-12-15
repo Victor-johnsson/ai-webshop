@@ -1,8 +1,8 @@
 using Backend.EntityFramework;
 using Backend.Pim.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using XProjectIntegrationsBackend.Services;
 
 namespace XProjectIntegrationsBackend.Controllers;
 
@@ -11,11 +11,13 @@ namespace XProjectIntegrationsBackend.Controllers;
 public class ProductsController : ControllerBase
 {
     private readonly BackendDbContext _context;
+    private readonly IImageService _imageService;
     private readonly ILogger<ProductsController> _logger;
 
-    public ProductsController(BackendDbContext context, ILogger<ProductsController> logger)
+    public ProductsController(BackendDbContext context, IImageService imageService, ILogger<ProductsController> logger)
     {
         _context = context;
+        _imageService = imageService;
         _logger = logger;
     }
 
@@ -46,6 +48,11 @@ public class ProductsController : ControllerBase
         if (model.Stock < 0)
             return BadRequest("Stock must be non-negative.");
 
+        string? imageUri = null;
+        if (!string.IsNullOrEmpty(model.ImageBase64))
+        {
+            imageUri = await _imageService.UploadImageAsync(model.ImageBase64, model.Name);
+        }
         // Check for unique name
         if (await _context.Products.AnyAsync(p => p.Name == model.Name))
             return Conflict("A product with this name already exists.");
@@ -56,7 +63,7 @@ public class ProductsController : ControllerBase
             Name = model.Name,
             Price = model.Price,
             Stock = model.Stock,
-            ImageUrl = model.ImageUrl
+            ImageUrl = imageUri
         };
         _context.Products.Add(product);
         await _context.SaveChangesAsync();
