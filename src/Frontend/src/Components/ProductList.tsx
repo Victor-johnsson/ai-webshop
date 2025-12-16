@@ -20,14 +20,14 @@ export default function ProductList({ products = [], onAction, actionLabel = 'Ac
         </div>
       )}
       {products.map((p) => (
-        <div key={p.id} className="border rounded p-4 flex flex-col">
+        <div key={p.id} className="card p-4 flex flex-col">
           <div className="flex-1">
             {p.imageUrl && (
-              <img src={p.imageUrl} alt={p.name} className="w-full h-40 object-cover rounded mb-3" />
+              <img src={p.imageUrl} alt={p.name} className="w-full h-40 object-cover rounded mb-3 bg-slate-700" />
             )}
             <div className="font-semibold mb-2">{p.name}</div>
-            {('description' in p) && <div className="text-sm text-gray-600 mb-2">{(p as any).description}</div>}
-            <div className="font-bold">${p.price}</div>
+            {('description' in p) && <div className="text-sm text-slate-300 mb-2">{(p as any).description}</div>}
+            <div className="font-bold text-slate-100">${p.price}</div>
           </div>
           <div className="mt-3">
             <Button onClick={() => onAction(p)}>{actionLabel}</Button>

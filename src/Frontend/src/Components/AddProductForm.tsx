@@ -35,8 +35,8 @@ export default function AddProductForm({ open, onClose, onSubmit }: Props) {
         <TextField label="Price" value={price} onChange={(e) => setPrice((e.target as HTMLInputElement).value)} />
         <TextField label="Stock" value={stock} onChange={(e) => setStock((e.target as HTMLInputElement).value)} />
         <div>
-          <label className="block text-sm mb-1">Image</label>
-          <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files && e.target.files[0] ? e.target.files[0] : null)} />
+          <label className="block text-sm mb-1 text-slate-200">Image</label>
+          <input className="input" type="file" accept="image/*" onChange={(e) => setImage(e.target.files && e.target.files[0] ? e.target.files[0] : null)} />
         </div>
         <div className="flex justify-end gap-3">
           <Button variant="outlined" onClick={onClose}>Cancel</Button>

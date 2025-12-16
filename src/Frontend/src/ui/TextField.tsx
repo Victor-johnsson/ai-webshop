@@ -7,8 +7,8 @@ type Props = React.InputHTMLAttributes<HTMLInputElement> & {
 export default function TextField({ label, className = '', ...props }: Props) {
   return (
     <label className={`flex flex-col text-sm ${className}`}>
-      {label && <span className="mb-1 text-gray-700">{label}</span>}
-      <input className="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" {...props} />
+      {label && <span className="mb-1 text-slate-200">{label}</span>}
+      <input className="input focus:ring-2 focus:ring-brand-500" {...props} />
     </label>
   );
 }

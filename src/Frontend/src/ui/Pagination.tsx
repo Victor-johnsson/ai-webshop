@@ -15,7 +15,7 @@ export default function Pagination({ count, page, onChange }: Props) {
         <button
           key={p}
           onClick={() => onChange(null, p)}
-          className={`px-3 py-1 rounded-md ${p === page ? 'bg-blue-600 text-white' : 'bg-gray-100'}`}
+          className={`px-3 py-1 rounded-md ${p === page ? 'bg-brand-600 text-white' : 'bg-slate-700 text-slate-100'}`}
         >
           {p}
         </button>

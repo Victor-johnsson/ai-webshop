@@ -24,7 +24,7 @@ export default function Webshop() {
   const [reviewOpen, setReviewOpen] = useState(false);
 
   if (isLoading) return <LinearProgress />;
-  if (error) return <div>Something went wrong</div>;
+  if (error) return <div className="text-rose-400">Something went wrong</div>;
 
   const paginatedData =
     data?.slice((page - 1) * itemsPerPage, page * itemsPerPage) || [];

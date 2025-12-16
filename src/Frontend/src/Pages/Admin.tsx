@@ -35,7 +35,7 @@ export default function AdminWebshop({ token }: { token: string }) {
   
 
   if (isLoading) return <LinearProgress />;
-  if (error) return <div>Something went wrong</div>;
+  if (error) return <div className="text-rose-400">Something went wrong</div>;
 
   const filteredData =
     data?.filter(

@@ -40,6 +40,12 @@ async function main() {
 function renderApp() {
   const rootElement = document.getElementById("root");
   if (rootElement) {
+    // enable dark mode by default (class-based Tailwind dark)
+    try {
+      document.documentElement.classList.add('dark');
+    } catch (e) {
+      // ignore if DOM not ready
+    }
     const root = createRoot(rootElement);
     root.render(
       <QueryClientProvider client={client}>

@@ -26,16 +26,16 @@ const AdminReviewsPage: React.FC = () => {
     <div>
       <AppBarComponent title="Site Reviews Admin" />
       <Container className="mt-20" >
-        <h2 className="text-2xl mb-4">All Site Reviews</h2>
+        <h2 className="text-2xl mb-4 text-slate-100">All Site Reviews</h2>
         {loading && <LinearProgress />}
-        {error && <div className="text-red-600">{error}</div>}
-        {(!loading && reviews.length === 0) && <div>No reviews found.</div>}
+        {error && <div className="text-rose-400">{error}</div>}
+        {(!loading && reviews.length === 0) && <div className="text-slate-300">No reviews found.</div>}
         <div className="mt-4">
           {reviews.map((r) => (
-            <div key={r.id} className="mb-3 p-2 border rounded bg-gray-50">
-              <div className="font-semibold">{r.name} <span className="text-gray-500">({r.date ? new Date(r.date).toLocaleString() : ''})</span></div>
-              <div>{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</div>
-              <div>{r.comment}</div>
+            <div key={r.id} className="mb-3 p-3 rounded card">
+              <div className="font-semibold text-slate-100">{r.name} <span className="text-slate-400">({r.date ? new Date(r.date).toLocaleString() : ''})</span></div>
+              <div className="text-yellow-400">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</div>
+              <div className="text-slate-200">{r.comment}</div>
             </div>
           ))}
         </div>
