@@ -1,7 +1,6 @@
 import { useState, useEffect, useReducer } from "react";
 import { useMsal } from "@azure/msal-react";
 import { InteractionStatus } from "@azure/msal-browser";
-import { validateToken } from "../../Services/service";
 import { loginRequest } from "../authConfig";
 
 interface AuthState {

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useMemo } from 'react';
 import { useQuery } from "react-query";
 import { CartItemType, getProducts } from "../Services/service";
 import AppBarComponent from "../Components/AppBarComponent";
@@ -101,13 +100,18 @@ export default function Webshop() {
           Site Reviews
         </Button>
       </div>
-      <Dialog open={reviewOpen} onClose={() => setReviewOpen(false)} title={"Site Reviews"}>
+      <Dialog
+        open={reviewOpen}
+        onClose={() => setReviewOpen(false)}
+        title={"Site Reviews"}
+      >
         <SiteReview />
         <div className="flex justify-center py-2">
-          <Button onClick={() => setReviewOpen(false)} variant="outlined">Close</Button>
+          <Button onClick={() => setReviewOpen(false)} variant="outlined">
+            Close
+          </Button>
         </div>
       </Dialog>
-
     </div>
   );
 }
