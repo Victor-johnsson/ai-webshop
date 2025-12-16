@@ -1,19 +1,14 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Container,
-  Grid,
-  Pagination,
-  LinearProgress,
-} from "@mui/material";
+import { useMemo } from 'react';
 import { useQuery } from "react-query";
 import { CartItemType, getProducts } from "../Services/service";
 import AppBarComponent from "../Components/AppBarComponent";
 import ProductList from "../Components/ProductList";
 import SiteReview from "../Components/SiteReview";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import Button from "@mui/material/Button";
+import Dialog from "../ui/Dialog";
+import Button from "../ui/Button";
+import Pagination from "../ui/Pagination";
+import LinearProgress from "../ui/Progress";
 import Cart from "../Components/Cart";
 import "../styles.css";
 
@@ -66,7 +61,7 @@ export default function Webshop() {
   };
 
   return (
-    <Box>
+    <div>
       <AppBarComponent
         title="WebshopX"
         showCart
@@ -83,40 +78,36 @@ export default function Webshop() {
         clearCart={handleClearCart}
       />
 
-      <Container sx={{ marginTop: "80px", padding: "20px" }}>
-        <Grid container spacing={3}>
+      <div className="container mx-auto mt-20 px-4">
+        <div className="grid grid-cols-1 gap-6">
           <ProductList
             products={paginatedData}
             onAction={handleAddToCart}
             actionLabel="Add to Cart"
           />
-        </Grid>
+        </div>
 
-        <Box
-          sx={{ display: "flex", justifyContent: "center", marginTop: "20px" }}
-        >
+        <div className="flex justify-center mt-5">
           <Pagination
             count={Math.ceil((data?.length || 0) / itemsPerPage)}
             page={page}
             onChange={(_, value) => setPage(value)}
-            color="primary"
           />
-        </Box>
-      </Container>
+        </div>
+      </div>
       {/* Review Button + Modal Dialog */}
-      <Box sx={{ display: "flex", justifyContent: "center", margin: "2rem 0" }}>
-        <Button variant="outlined" color="primary" onClick={() => setReviewOpen(true)}>
+      <div className="flex justify-center my-8">
+        <Button variant="outlined" onClick={() => setReviewOpen(true)}>
           Site Reviews
         </Button>
-      </Box>
-      <Dialog open={reviewOpen} onClose={() => setReviewOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Site Reviews</DialogTitle>
+      </div>
+      <Dialog open={reviewOpen} onClose={() => setReviewOpen(false)} title={"Site Reviews"}>
         <SiteReview />
-        <Box sx={{ display: "flex", justifyContent: "center", py: 2 }}>
+        <div className="flex justify-center py-2">
           <Button onClick={() => setReviewOpen(false)} variant="outlined">Close</Button>
-        </Box>
+        </div>
       </Dialog>
 
-    </Box>
+    </div>
   );
 }

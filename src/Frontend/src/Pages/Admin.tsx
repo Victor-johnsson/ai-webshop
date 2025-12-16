@@ -1,16 +1,9 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Container,
-  TextField,
-  LinearProgress,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  CircularProgress,
-} from "@mui/material";
+import Container from '../ui/Container';
+import TextField from '../ui/TextField';
+import { LinearProgress, CircularProgress } from '../ui/Progress';
+import Dialog from '../ui/Dialog';
+import Button from '../ui/Button';
 import { useQuery, useQueryClient } from "react-query";
 import {
   CartItemType,
@@ -19,6 +12,7 @@ import {
   ProductInputType,
   addProduct,
 } from "../Services/service";
+import { Link } from 'react-router-dom';
 import AppBarComponent from "../Components/AppBarComponent";
 import ProductList from "../Components/ProductList";
 import AddProductForm from "../Components/AddProductForm";
@@ -37,6 +31,8 @@ export default function AdminWebshop({ token }: { token: string }) {
     null,
   );
   const { handleLogout } = React.useContext(AuthContext);
+
+  
 
   if (isLoading) return <LinearProgress />;
   if (error) return <div>Something went wrong</div>;
@@ -91,21 +87,22 @@ export default function AdminWebshop({ token }: { token: string }) {
   };
 
   return (
-    <Box>
+    <div>
       <AppBarComponent
         title="WebshopX Admin"
+        adminLinks
         logoutButton
         onLogoutClick={() => handleLogout()}
       />
-
-      <Container sx={{ marginTop: "80px" }}>
-        <TextField
-          fullWidth
-          label="Search Products"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{ marginBottom: "20px" }}
-        />
+      <Container className="mt-20">
+        <div className="mb-5">
+          <TextField
+            label="Search Products"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm((e.target as HTMLInputElement).value)}
+            className="w-full"
+          />
+        </div>
 
         <ProductList
           products={filteredData}
@@ -114,6 +111,9 @@ export default function AdminWebshop({ token }: { token: string }) {
           isAdmin={true}
           onAddProduct={() => setFormOpen(true)}
         />
+        <div className="mt-6">
+          <Link to="/admin/reviews"><Button>View Reviews</Button></Link>
+        </div>
       </Container>
 
       {/* Add Product Form */}
@@ -124,49 +124,20 @@ export default function AdminWebshop({ token }: { token: string }) {
       />
 
       {/* Confirmation Dialog for Deletion */}
-      <Dialog open={Boolean(productToDelete)} onClose={handleCancelDelete}>
-        <DialogTitle>Confirm Deletion</DialogTitle>
-        <DialogContent>
-          Are you sure you want to delete this product?
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant="contained"
-            onClick={handleCancelDelete}
-            color="primary"
-          >
-            No
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleConfirmDelete}
-            color="error"
-            autoFocus
-          >
-            Yes
-          </Button>
-        </DialogActions>
+      <Dialog open={Boolean(productToDelete)} onClose={handleCancelDelete} title="Confirm Deletion">
+        <div>Are you sure you want to delete this product?</div>
+        <div className="flex gap-3 justify-end mt-3">
+          <Button onClick={handleCancelDelete} variant="outlined">No</Button>
+          <Button onClick={handleConfirmDelete} variant="contained">Yes</Button>
+        </div>
       </Dialog>
 
       {/* Circular Progress Overlay */}
       {actionLoading && (
-        <Box
-          sx={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "rgba(0,0,0,0.3)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 9999,
-          }}
-        >
+        <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
           <CircularProgress />
-        </Box>
+        </div>
       )}
-    </Box>
+    </div>
   );
 }

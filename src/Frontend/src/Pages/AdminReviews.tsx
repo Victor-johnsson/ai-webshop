@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Box, Container, LinearProgress, Typography } from "@mui/material";
+import { useMemo } from 'react';
+import { LinearProgress } from '../ui/Progress';
+
+import '../styles.css';
+
+const Box = (p: any) => <div {...p} />;
+const Container = (p: any) => <div className={`container mx-auto px-4 ${p.className || ''}`}>{p.children}</div>;
+const Typography = (p: any) => <div {...p} />;
 import { fetchReviews, Review } from "../Services/service";
 import AppBarComponent from "../Components/AppBarComponent";
 
@@ -16,24 +23,24 @@ const AdminReviewsPage: React.FC = () => {
   }, []);
 
   return (
-    <Box>
+    <div>
       <AppBarComponent title="Site Reviews Admin" />
-      <Container sx={{ marginTop: "80px", maxWidth: 700 }}>
-        <Typography variant="h4" sx={{ mb: 2 }}>All Site Reviews</Typography>
+      <Container className="mt-20" >
+        <h2 className="text-2xl mb-4">All Site Reviews</h2>
         {loading && <LinearProgress />}
-        {error && <Typography color="error">{error}</Typography>}
-        {(!loading && reviews.length === 0) && <Typography>No reviews found.</Typography>}
-        <Box sx={{ mt: 2 }}>
+        {error && <div className="text-red-600">{error}</div>}
+        {(!loading && reviews.length === 0) && <div>No reviews found.</div>}
+        <div className="mt-4">
           {reviews.map((r) => (
-            <Box key={r.id} sx={{ mb: 3, p: 2, border: '1px solid #ccc', borderRadius: 2, background: '#fafafa' }}>
-              <Typography fontWeight="bold">{r.name} <span style={{ color: '#888' }}>({r.date ? new Date(r.date).toLocaleString() : ''})</span></Typography>
-              <Typography>{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</Typography>
-              <Typography>{r.comment}</Typography>
-            </Box>
+            <div key={r.id} className="mb-3 p-2 border rounded bg-gray-50">
+              <div className="font-semibold">{r.name} <span className="text-gray-500">({r.date ? new Date(r.date).toLocaleString() : ''})</span></div>
+              <div>{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</div>
+              <div>{r.comment}</div>
+            </div>
           ))}
-        </Box>
+        </div>
       </Container>
-    </Box>
+    </div>
   );
 };
 
