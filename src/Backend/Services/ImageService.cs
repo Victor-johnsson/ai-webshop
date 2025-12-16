@@ -6,20 +6,14 @@ namespace Backend.Services;
 public interface IImageService
 {
     Task<string> UploadImageAsync(string base64Image, string fileName);
-      Task SetPublicReadOnExistingContainer();
+    Task SetPublicReadOnExistingContainer();
 }
 
-public class ImageService : IImageService
+public class ImageService(BlobContainerClient blobServiceClient, ILogger<ImageService> logger) : IImageService
 {
-    private readonly ILogger<ImageService> _logger;
+    private readonly ILogger<ImageService> _logger = logger;
 
-    private readonly BlobContainerClient _blobServiceClient;
-
-    public ImageService(ILogger<ImageService> logger, BlobContainerClient blobServiceClient)
-    {
-        _logger = logger;
-        _blobServiceClient = blobServiceClient;
-    }
+    private readonly BlobContainerClient _blobServiceClient = blobServiceClient;
 
     public async Task<string> UploadImageAsync(string base64Image, string fileName)
     {
@@ -28,7 +22,7 @@ public class ImageService : IImageService
             string base64Data = base64Image;
             if (base64Image.Contains(','))
             {
-                base64Data = base64Image[(base64Image.IndexOf(",") + 1)..];
+                base64Data = base64Image[(base64Image.IndexOf(',') + 1)..];
             }
 
             byte[] imageBytes = Convert.FromBase64String(base64Data);
@@ -48,21 +42,18 @@ public class ImageService : IImageService
 
     private static string DetermineFileExtension(string base64Image)
     {
-        string extension = ".jpg";
-
-        if (base64Image.Contains("data:image/"))
+        if (!base64Image.Contains("data:image/"))
         {
-            string mimeType = base64Image.Split(',')[0].Split(':')[1].Split(';')[0];
-            extension = mimeType switch
-            {
-                "image/png" => ".png",
-                "image/jpeg" => ".jpg",
-                "image/gif" => ".gif",
-                _ => ".jpg",
-            };
+            return ".jpg";
         }
-
-        return extension;
+        string mimeType = base64Image.Split(',')[0].Split(':')[1].Split(';')[0];
+        return mimeType switch
+        {
+            "image/png" => ".png",
+            "image/jpeg" => ".jpg",
+            "image/gif" => ".gif",
+            _ => ".jpg",
+       };
     }
 
     public async Task SetPublicReadOnExistingContainer()

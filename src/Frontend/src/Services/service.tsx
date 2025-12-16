@@ -126,24 +126,6 @@ export const validateToken = async (token: string): Promise<boolean> => {
   }
 };
 
-export type PaymentResponseType = {
-  Id: string;
-  PaymentCompleted: string;
-};
-
-export const performPayment = async (): Promise<PaymentResponseType> => {
-  const response = await fetch(`/api/payments`, {
-    method: "POST",
-  });
-
-  if (!response.ok) {
-    console.error("Fetch failed:", response.status, response.statusText);
-    throw new Error(`HTTP error! Status: ${response.status}`);
-  }
-
-  return response.json();
-};
-
 export type OrderLine = {
   productId: string;
   itemCount: number;
@@ -160,10 +142,7 @@ export type Order = {
   customer: Customer;
 };
 
-export const placeOrder = async (
-  order: Order,
-  paymentId: string,
-): Promise<void> => {
+export const placeOrder = async (order: Order): Promise<void> => {
   try {
     const response = await fetch(`/api/orders`, {
       method: "POST",
@@ -171,7 +150,6 @@ export const placeOrder = async (
       body: JSON.stringify({
         orderLines: order.orderLines,
         customer: order.customer,
-        paymentId: paymentId,
       }),
     });
 
@@ -199,27 +177,29 @@ export type Review = {
 };
 
 export const fetchReviews = async (): Promise<Review[]> => {
-  const response = await fetch('/api/reviews', {
-    method: 'GET',
+  const response = await fetch("/api/reviews", {
+    method: "GET",
   });
   if (!response.ok) {
-    throw new Error('Failed to fetch reviews');
+    throw new Error("Failed to fetch reviews");
   }
   return response.json();
 };
 
-export const submitReview = async (review: Omit<Review, 'id' | 'date'>): Promise<Review> => {
-  const response = await fetch('/api/reviews', {
-    method: 'POST',
+export const submitReview = async (
+  review: Omit<Review, "id" | "date">,
+): Promise<Review> => {
+  const response = await fetch("/api/reviews", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(review),
   });
   if (!response.ok) {
     const message = await response.text();
     throw new Error(
-      'Failed to submit review: ' + response.status + ' ' + message
+      "Failed to submit review: " + response.status + " " + message,
     );
   }
   return response.json();

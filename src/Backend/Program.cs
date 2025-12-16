@@ -23,7 +23,6 @@ builder.AddNpgsqlDbContext<BackendDbContext>("db");
 builder.EnrichNpgsqlDbContext<BackendDbContext>();
 builder.AddAzureBlobContainerClient("productimages");
 builder.Services.AddScoped<IImageService, ImageService>();
-builder.Services.AddHttpClient<IPaymentsService, PaymentsService>();
 builder
     .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
@@ -72,5 +71,13 @@ app.MapScalarApiReference(options =>
 using var scope = app.Services.CreateScope();
 var imageServiceScope = scope.ServiceProvider.GetRequiredService<IImageService>();
 await imageServiceScope.SetPublicReadOnExistingContainer();
+
+// Seed the database in development environment only
+var env = app.Services.GetRequiredService<IWebHostEnvironment>();
+if (env.IsDevelopment())
+{
+    var db = scope.ServiceProvider.GetRequiredService<BackendDbContext>();
+    Backend.SeedData.SeedDatabase(db);
+}
 
 app.Run();

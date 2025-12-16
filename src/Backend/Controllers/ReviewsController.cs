@@ -6,16 +6,11 @@ using Microsoft.EntityFrameworkCore;
 namespace Backend.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class ReviewsController : ControllerBase
+    [Route("api/reviews")]
+    public class ReviewsController(BackendDbContext dbContext) : ControllerBase
     {
-        private readonly BackendDbContext _dbContext;
-        public ReviewsController(BackendDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+        private readonly BackendDbContext _dbContext = dbContext;
 
-        // GET: api/reviews
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Review>>> GetReviews()
         {
@@ -25,7 +20,6 @@ namespace Backend.Controllers
             return Ok(reviews);
         }
 
-        // POST: api/reviews
         [HttpPost]
         public async Task<ActionResult<Review>> PostReview(Review review)
         {

@@ -1,5 +1,6 @@
-using Microsoft.EntityFrameworkCore;
+using Backend.EntityFramework;
 using Backend.Models.Crm;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Services;
 
@@ -10,87 +11,77 @@ public interface IOrderService
     Task<OrderDTO> GetOrder(string id);
     Task<List<OrderDTO>> UpdateOrderStatus();
 }
-public class OrderService : IOrderService
+public class OrderService(BackendDbContext context) : IOrderService
 {
-    readonly EntityFramework.BackendDbContext _context;
-
-    public OrderService(EntityFramework.BackendDbContext context)
-    {
-        _context = context;
-    }
+    readonly BackendDbContext _context = context;
 
     public async Task<OrderDTO> CreateOrder(CreateOrderModel model)
     {
         Customer customer = new()
         {
-            Name = model.Customer?.Name ?? string.Empty,
-            Address = model.Customer?.Address ?? string.Empty,
-            Email = model.Customer?.Email ?? string.Empty,
+            Name = model.Customer.Name,
+            Address = model.Customer.Address,
+            Email = model.Customer.Email,
             Order = new Order()
             {
                 Status = OrderStatusEnum.OrderReceived.ToString(),
-                OrderLines = model.OrderLines?.Select(p => new OrderLine
+                OrderLines = [.. model.OrderLines.Select(p => new OrderLine
                 {
                     ItemCount = p.ItemCount
-                }).ToList() ?? []
+                })]
             }
         };
 
         _context.Customers.Add(customer);
         var v = await _context.SaveChangesAsync();
-        if (v > 1)
+        if (v == 0)
         {
-            OrderDTO orderDTO = new()
-            {
-                OrderId = customer.Order!.Id,
-                CustomerName = customer.Name,
-                CustomerAddress = customer.Address,
-                CustomerEmail = customer.Email,
-                OrderStatus = OrderStatusEnum.OrderReceived.ToString(),
-            };
-            return orderDTO;
+            throw new Exception();
         }
+        OrderDTO orderDTO = new()
+        {
+            OrderId = customer.Order.Id,
+            CustomerName = customer.Name,
+            CustomerAddress = customer.Address,
+            CustomerEmail = customer.Email,
+            OrderStatus = OrderStatusEnum.OrderReceived.ToString(),
+        };
+        return orderDTO;
 
-        throw new Exception();
     }
 
     public async Task<OrderDTO> GetOrder(string id)
     {
         var order = await _context.Orders.Include(o => o.Customer).Include(o => o.OrderLines).FirstOrDefaultAsync(o => o.Id.ToString() == id);
-        if (order != null)
+        if (order is null)
         {
-            var dtoObj = new OrderDTO
-            {
-                OrderId = order.Id,
-                CustomerName = order.Customer?.Name,
-                OrderStatus = order.Status,
-                CustomerEmail = order.Customer?.Email,
-                CustomerAddress = order.Customer?.Address
-            };
-            return dtoObj;
+            throw new Exception("Order not found");
         }
+        var dtoObj = new OrderDTO
+        {
+            OrderId = order.Id,
+            CustomerName = order.Customer?.Name,
+            OrderStatus = order.Status,
+            CustomerEmail = order.Customer?.Email,
+            CustomerAddress = order.Customer?.Address
+        };
+        return dtoObj;
 
-        throw new Exception("Order not found");
     }
 
     public async Task<ICollection<OrderDTO>> GetOrders()
     {
         var orders = await _context.Orders.Include(o => o.Customer).Include(o => o.OrderLines).ToListAsync();
-        var dtoList = new List<OrderDTO>();
-        foreach (var order in orders)
+        var dtos = orders.Select(order => new OrderDTO
         {
-            var dtoObj = new OrderDTO
-            {
-                OrderId = order.Id,
-                CustomerName = order.Customer?.Name,
-                OrderStatus = order.Status,
-                CustomerEmail = order.Customer?.Email,
-                CustomerAddress = order.Customer?.Address
-            };
-            dtoList.Add(dtoObj);
-        }
+            OrderId = order.Id,
+            CustomerName = order.Customer?.Name,
+            OrderStatus = order.Status,
+            CustomerEmail = order.Customer?.Email,
+            CustomerAddress = order.Customer?.Address
+        }).ToList();
 
-        return dtoList;
+        return dtos;
     }
 
     public async Task<List<OrderDTO>> UpdateOrderStatus()
@@ -103,22 +94,20 @@ public class OrderService : IOrderService
 
         await _context.SaveChangesAsync();
 
-        var allOrders = await _context.Orders.Include(o => o.Customer).Include(o => o.OrderLines).Where(x => x.Status == OrderStatusEnum.OrderReadyForPickUp.ToString()).ToListAsync();
-        var dtoList = new List<OrderDTO>();
-        foreach (var order in allOrders)
+        var allOrders = await _context.Orders.Include(o => o.Customer)
+            .Include(o => o.OrderLines)
+            .Where(x => x.Status == OrderStatusEnum.OrderReadyForPickUp.ToString())
+            .ToListAsync();
+        var dtos = allOrders.Select(order => new OrderDTO
         {
-            var dtoObj = new OrderDTO
-            {
-                OrderId = order.Id,
-                CustomerName = order.Customer?.Name,
-                OrderStatus = order.Status,
-                CustomerEmail = order.Customer?.Email,
-                CustomerAddress = order.Customer?.Address
-            };
-            dtoList.Add(dtoObj);
-        }
+            OrderId = order.Id,
+            CustomerName = order.Customer?.Name,
+            OrderStatus = order.Status,
+            CustomerEmail = order.Customer?.Email,
+            CustomerAddress = order.Customer?.Address
+        }).ToList();
 
-        return dtoList;
+        return dtos;
     }
 }
 

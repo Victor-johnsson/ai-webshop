@@ -1,6 +1,7 @@
 using Backend.EntityFramework;
 using Backend.Models.Pim;
 using Backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,18 +9,10 @@ namespace Backend.Controllers;
 
 [Route("api/products")]
 [ApiController]
-public class ProductsController : ControllerBase
+public class ProductsController(BackendDbContext context, IImageService imageService) : ControllerBase
 {
-    private readonly BackendDbContext _context;
-    private readonly IImageService _imageService;
-    private readonly ILogger<ProductsController> _logger;
-
-    public ProductsController(BackendDbContext context, IImageService imageService, ILogger<ProductsController> logger)
-    {
-        _context = context;
-        _imageService = imageService;
-        _logger = logger;
-    }
+    private readonly BackendDbContext _context = context;
+    private readonly IImageService _imageService = imageService;
 
     [HttpGet]
     public async Task<IActionResult> GetAllProducts()
@@ -38,7 +31,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
-    // [Authorize(Policy = "MustBeAdmin")]
+    [Authorize(Policy = "MustBeAdmin")]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProduct model)
     {
         if (string.IsNullOrWhiteSpace(model.Name))
@@ -71,7 +64,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPut("{id:guid}/stock")]
-    // [Authorize(Policy = "MustBeAdmin")]
+    [Authorize(Policy = "MustBeAdmin")]
     public async Task<IActionResult> DecrementStock(Guid id, [FromQuery] int stockCount)
     {
         var product = await _context.Products.FindAsync(id);
@@ -87,7 +80,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
-    // [Authorize(Policy = "MustBeAdmin")]
+    [Authorize(Policy = "MustBeAdmin")]
     public async Task<IActionResult> DeleteProduct(Guid id)
     {
         var product = await _context.Products.FindAsync(id);
