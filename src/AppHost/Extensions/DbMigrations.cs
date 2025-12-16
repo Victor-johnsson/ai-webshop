@@ -1,9 +1,14 @@
 using System.Diagnostics;
+using AppHost.Extensions;
 using Aspire.Hosting.Pipelines;
 using Microsoft.Extensions.Logging;
+//
+namespace AppHost.Extensions;
 
 public static class ExtMethods
 {
+    private const string Message = "Data Recieved: {Data}";
+
     extension(IDistributedApplicationBuilder builder)
     {
         public IResourceBuilder<ExecutableResource> AddEfMigrate(IResourceBuilder<ProjectResource> app, IResourceBuilder<IResourceWithConnectionString> database)
@@ -66,7 +71,7 @@ public static class ExtMethods
     {
         public ProcessStartInfo WithArgs(params string[] args)
         {
-            foreach (var arg in args)
+            foreach (string arg in args)
             {
                 psi.ArgumentList.Add(arg);
             }
@@ -89,7 +94,8 @@ public static class ExtMethods
             {
                 if (e.Data != null)
                 {
-                    logger.LogDebug(e.Data);
+#pragma warning disable CA1873 // Avoid potentially expensive logging
+                    logger.LogDebug(Message, e.Data);
                 }
             };
 
@@ -97,10 +103,11 @@ public static class ExtMethods
             {
                 if (e.Data != null)
                 {
-                    logger.LogDebug(e.Data);
+                    logger.LogDebug(Message, e.Data);
                 }
             };
 
+#pragma warning restore CA1873 // Avoid potentially expensive logging
             process.Exited += (sender, e) =>
             {
                 tcs.SetResult(process.ExitCode);

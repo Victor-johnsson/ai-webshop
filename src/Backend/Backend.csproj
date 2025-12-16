@@ -5,10 +5,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL"></PackageReference>
-    <PackageReference Include="Scalar.AspNetCore"></PackageReference>
     <PackageReference Include="Aspire.Azure.Storage.Blobs"></PackageReference>
-    <PackageReference Include="Aspire.StackExchange.Redis"></PackageReference>
-    <PackageReference Include="Aspire.Microsoft.Azure.StackExchangeRedis"></PackageReference>
+    <PackageReference Include="Scalar.AspNetCore"></PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi"></PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore"></PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
@@ -16,7 +14,6 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Identity.Web"></PackageReference>
-    <PackageReference Include="Swashbuckle.AspNetCore"></PackageReference>
     <ProjectReference Include="../ServiceDefaults/ServiceDefaults.csproj"></ProjectReference>
   </ItemGroup>
 </Project>

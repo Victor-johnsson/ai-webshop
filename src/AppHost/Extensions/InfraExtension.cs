@@ -1,31 +1,30 @@
 using Aspire.Hosting.Azure;
-using Azure.Provisioning.Redis;
 using Azure.Provisioning.Storage;
 
-namespace Extensions;
+namespace AppHost.Extensions;
 
 public static class InfraExtensions
 {
 
-    public static IResourceBuilder<AzureRedisCacheResource> ConfigureRedisInfra(this IResourceBuilder<AzureRedisCacheResource>? redis)
-    {
-
-        ArgumentNullException.ThrowIfNull(redis);
-        return redis.ConfigureInfrastructure(infra =>
-        {
-            var redisc = infra
-                .GetProvisionableResources()
-                .OfType<Azure.Provisioning.Redis.RedisResource>()
-                .Single();
-
-            redisc.Sku = new()
-            {
-                Family = RedisSkuFamily.BasicOrStandard,
-                Name = RedisSkuName.Basic,
-                Capacity = 0,
-            };
-        });
-    }
+    // public static IResourceBuilder<AzureRedisCacheResource> ConfigureRedisInfra(this IResourceBuilder<AzureRedisCacheResource>? redis)
+    // {
+    //
+    //     ArgumentNullException.ThrowIfNull(redis);
+    //     return redis.ConfigureInfrastructure(infra =>
+    //     {
+    //         var redisc = infra
+    //             .GetProvisionableResources()
+    //             .OfType<Azure.Provisioning.Redis.RedisResource>()
+    //             .Single();
+    //
+    //         redisc.Sku = new()
+    //         {
+    //             Family = RedisSkuFamily.BasicOrStandard,
+    //             Name = RedisSkuName.Basic,
+    //             Capacity = 0,
+    //         };
+    //     });
+    // }
 
     public static IResourceBuilder<AzureStorageResource> ConfigureStorageInfra(this IResourceBuilder<AzureStorageResource>? storage)
     {
