@@ -8,6 +8,7 @@ import ProtectedRoute from "./Authentication/ProtectedRoute";
 import AuthContext from "./Authentication/AuthContext";
 import useAuth from "./Authentication/hooks/useAuth";
 import UnauthorizedComponent from "./Components/UnauthorizedComponent";
+import FAQ from "./Pages/FAQ";
 
 const App = () => {
   return (
@@ -30,8 +31,9 @@ const AuthConsumerApp = () => {
     <AuthContext.Provider value={{ handleLogout }}>
       <BrowserRouter>
         <Routes>
+          <Route path="/faq" element={<FAQ />} />
           <Route path="/" element={<Home />} />
-          <Route element={<ProtectedRoute />}> 
+          <Route element={<ProtectedRoute />}>
             <Route path="/admin" element={<AdminWebshop token={token} />} />
             <Route path="/admin/reviews" element={<AdminReviewsPage />} />
           </Route>

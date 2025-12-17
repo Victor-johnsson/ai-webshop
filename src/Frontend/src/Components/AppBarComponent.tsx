@@ -35,7 +35,10 @@ export default function AppBarComponent({
           <span>{title}</span>
         </Link>
 
-        <nav className="flex items-center gap-3" aria-label="Main navigation">
+         <nav className="flex items-center gap-3" aria-label="Main navigation">
+           <Button variant="ghost" as-child>
+             <Link to="/faq">FAQ</Link>
+           </Button>
           {showCart && onCartClick && (
             <Button
               variant="ghost"
