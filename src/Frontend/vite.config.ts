@@ -12,6 +12,7 @@ export default defineConfig(({ mode }) => {
     return {
         plugins: [react()],
         server: {
+            allowedHosts: ['host.docker.internal'],
             port: parseInt(env.VITE_PORT),
              proxy: {
                  '/api': {

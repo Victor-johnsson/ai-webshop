@@ -13,7 +13,7 @@ var foundry = builder
 var chat = foundry.AddDeployment("chat", AIFoundryModel.OpenAI.Gpt41);
 
 // Storage Account Resources
-var storage = builder.AddAzureStorage("storage").RunAsEmulator(e=>e.WithLifetime(ContainerLifetime.Persistent)).ConfigureStorageInfra();
+var storage = builder.AddAzureStorage("storage").RunAsEmulator(e => e.WithLifetime(ContainerLifetime.Persistent)).ConfigureStorageInfra();
 var blobs = storage.AddBlobContainer("productimages");
 
 var postgres = builder.AddAzurePostgresFlexibleServer("postgres");
@@ -46,14 +46,15 @@ backend.WithChildRelationship(migrations);
 // Frontend Application
 var frontend = builder
     .AddViteApp("frontend", "../Frontend")
-    .WaitFor(backend);
+    .WithExternalHttpEndpoints()
+    .PublishAsAzureAppServiceWebsite((infra, website)=>{});
 
 var yarp = builder.AddYarp("yarp")
                   .WithExternalHttpEndpoints()
                   .WithConfiguration(c =>
                   {
+                      c.AddRoute("{**catch-all}", frontend);
                       c.AddRoute("/api/{**catch-all}", backend);
-                  }).PublishWithStaticFiles(frontend);
+                  });
 
-frontend.WithReference(yarp);
 builder.Build().Run();
