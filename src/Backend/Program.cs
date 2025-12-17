@@ -7,6 +7,8 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
+builder.AddAzureChatCompletionsClient(connectionName: "chat").AddChatClient();
+
 builder.Services.AddOpenApi();
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -16,6 +18,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 builder.Services.AddProblemDetails();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpClient();
+builder.Services.AddScoped<ChatService>();
 builder.Services.AddControllers()
     .AddJsonOptions(o => o.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase);
 builder.Services.AddScoped<IOrderService, OrderService>();

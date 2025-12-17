@@ -1,4 +1,4 @@
-export type CartItemType = {
+export type Product = {
   id: string;
   name: string;
   price: number;
@@ -7,7 +7,7 @@ export type CartItemType = {
   amount: number;
 };
 // Get all products
-export const getProducts = async (): Promise<CartItemType[]> => {
+export const getProducts = async (): Promise<Product[]> => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
   const response = await fetch(`/api/products`, {

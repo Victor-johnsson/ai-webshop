@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.AppHost"></PackageReference>
     <PackageReference Include="Aspire.Hosting.Azure"></PackageReference>
+    <PackageReference Include="Aspire.Hosting.Azure.AIFoundry"></PackageReference>
     <PackageReference Include="Aspire.Hosting.Azure.AppService"></PackageReference>
     <PackageReference Include="Aspire.Hosting.Azure.PostgreSQL"></PackageReference>
     <PackageReference Include="Aspire.Hosting.JavaScript"></PackageReference>

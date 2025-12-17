@@ -1,38 +1,34 @@
 import React, { useState } from "react";
-import Container from '../ui/Container';
-import TextField from '../ui/TextField';
-import { LinearProgress, CircularProgress } from '../ui/Progress';
-import Dialog from '../ui/Dialog';
-import Button from '../ui/Button';
+import Container from "../ui/Container";
+import TextField from "../ui/TextField";
+import { LinearProgress, CircularProgress } from "../ui/Progress";
+import Dialog from "../ui/Dialog";
+import Button from "../ui/Button";
 import { useQuery, useQueryClient } from "react-query";
 import {
-  CartItemType,
+  Product,
   getProducts,
   deleteProduct,
   ProductInputType,
   addProduct,
 } from "../Services/service";
-import { Link } from 'react-router-dom';
-import AppBarComponent from "../Components/AppBarComponent";
+import { Link } from "react-router-dom";
 import ProductList from "../Components/ProductList";
 import AddProductForm from "../Components/AddProductForm";
 import AuthContext from "../Authentication/AuthContext";
+import AppBarComponent from "../Components/AppBarComponent";
 
 export default function AdminWebshop({ token }: { token: string }) {
   const queryClient = useQueryClient();
-  const { data, isLoading, error } = useQuery<CartItemType[]>(
+  const { data, isLoading, error } = useQuery<Product[]>(
     ["products"],
     getProducts,
   );
   const [searchTerm, setSearchTerm] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
-  const [productToDelete, setProductToDelete] = useState<CartItemType | null>(
-    null,
-  );
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const { handleLogout } = React.useContext(AuthContext);
-
-  
 
   if (isLoading) return <LinearProgress />;
   if (error) return <div className="text-rose-400">Something went wrong</div>;
@@ -44,7 +40,7 @@ export default function AdminWebshop({ token }: { token: string }) {
         item.id.includes(searchTerm),
     ) || [];
 
-  const openConfirmDialog = (clickedItem: CartItemType) => {
+  const openConfirmDialog = (clickedItem: Product) => {
     setProductToDelete(clickedItem);
   };
 
@@ -99,7 +95,9 @@ export default function AdminWebshop({ token }: { token: string }) {
           <TextField
             label="Search Products"
             value={searchTerm}
-            onChange={(e) => setSearchTerm((e.target as HTMLInputElement).value)}
+            onChange={(e) =>
+              setSearchTerm((e.target as HTMLInputElement).value)
+            }
             className="w-full"
           />
         </div>
@@ -112,7 +110,9 @@ export default function AdminWebshop({ token }: { token: string }) {
           onAddProduct={() => setFormOpen(true)}
         />
         <div className="mt-6">
-          <Link to="/admin/reviews"><Button>View Reviews</Button></Link>
+          <Link to="/admin/reviews">
+            <Button>View Reviews</Button>
+          </Link>
         </div>
       </Container>
 
@@ -124,11 +124,19 @@ export default function AdminWebshop({ token }: { token: string }) {
       />
 
       {/* Confirmation Dialog for Deletion */}
-      <Dialog open={Boolean(productToDelete)} onClose={handleCancelDelete} title="Confirm Deletion">
+      <Dialog
+        open={Boolean(productToDelete)}
+        onClose={handleCancelDelete}
+        title="Confirm Deletion"
+      >
         <div>Are you sure you want to delete this product?</div>
         <div className="flex gap-3 justify-end mt-3">
-          <Button onClick={handleCancelDelete} variant="outlined">No</Button>
-          <Button onClick={handleConfirmDelete} variant="contained">Yes</Button>
+          <Button onClick={handleCancelDelete} variant="outlined">
+            No
+          </Button>
+          <Button onClick={handleConfirmDelete} variant="contained">
+            Yes
+          </Button>
         </div>
       </Dialog>
 

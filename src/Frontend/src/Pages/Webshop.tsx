@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
-import { CartItemType, getProducts } from "../Services/service";
+import { Product, getProducts } from "../Services/service";
 import AppBarComponent from "../Components/AppBarComponent";
 import ProductList from "../Components/ProductList";
 import SiteReview from "../Components/SiteReview";
@@ -12,12 +12,12 @@ import Cart from "../Components/Cart";
 import "../styles.css";
 
 export default function Webshop() {
-  const { data, isLoading, error } = useQuery<CartItemType[]>(
+  const { data, isLoading, error } = useQuery<Product[]>(
     ["products"],
     getProducts,
   );
   const [cartOpen, setCartOpen] = useState(false);
-  const [cartItems, setCartItems] = useState<CartItemType[]>([]);
+  const [cartItems, setCartItems] = useState<Product[]>([]);
   const [page, setPage] = useState(1);
   const itemsPerPage = 6;
   const [reviewOpen, setReviewOpen] = useState(false);
@@ -28,7 +28,7 @@ export default function Webshop() {
   const paginatedData =
     data?.slice((page - 1) * itemsPerPage, page * itemsPerPage) || [];
 
-  const handleAddToCart = (clickedItem: CartItemType) => {
+  const handleAddToCart = (clickedItem: Product) => {
     setCartItems((prev) => {
       const isItemInCart = prev.find((item) => item.id === clickedItem.id);
       if (isItemInCart) {
@@ -51,7 +51,7 @@ export default function Webshop() {
         } else {
           return [...acc, item];
         }
-      }, [] as CartItemType[]),
+      }, [] as Product[]),
     );
   };
 

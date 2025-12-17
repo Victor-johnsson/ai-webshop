@@ -1,9 +1,16 @@
 using AppHost.Extensions;
+using Aspire.Hosting.Azure;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
 // ======== ENVIRONMENT & PARAMETERS ========
 var env = builder.AddAzureAppServiceEnvironment("appservice-env");
+
+var foundry = builder
+    .AddAzureAIFoundry("foundry")
+    .RunAsExisting("kiv-vj-resource", "rg-Viktor-8972");
+
+var chat = foundry.AddDeployment("chat", AIFoundryModel.OpenAI.Gpt41);
 
 // Storage Account Resources
 var storage = builder.AddAzureStorage("storage").RunAsEmulator(e=>e.WithLifetime(ContainerLifetime.Persistent)).ConfigureStorageInfra();
@@ -19,6 +26,7 @@ var backend = builder
     .WithExternalHttpEndpoints()
     .WithReference(blobs)
     .WithReference(db)
+    .WithReference(chat)
     .WithUrlForEndpoint("https", url =>
     {
         url.DisplayText = "Scalar (HTTPS)";
